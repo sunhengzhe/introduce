@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/>
+    <title>色彩贪吃蛇</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            background-color: #f00e5a;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #mask {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-transform: translate3d(-100%, 0, 0);
+            background-color: #f00e5a;
+        }
+
+        @-webkit-keyframes bg-up {
+            0% {
+                -webkit-transform: translate3d(0, 100%, 0);
+            }
+            100% {
+                -webkit-transform: translate3d(0, 0, 0);
+            }
+        }
+
+        @-webkit-keyframes bg-down {
+            0% {
+                -webkit-transform: translate3d(0, -100%, 0);
+            }
+            100% {
+                -webkit-transform: translate3d(0, 0, 0);
+            }
+        }
+
+        @-webkit-keyframes bg-left {
+            0% {
+                -webkit-transform: translate3d(100%, 0, 0);
+            }
+            100% {
+                -webkit-transform: translate3d(0, 0, 0);
+            }
+        }
+
+        @-webkit-keyframes bg-right {
+            0% {
+                -webkit-transform: translate3d(-100%, 0, 0);
+            }
+            100% {
+                -webkit-transform: translate3d(0, 0, 0);
+            }
+        }
+
+        #stage {
+            border: 5px #fff solid;
+            display: block;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            -webkit-transform: translate3d(-50%, -50%, 0);
+        }
+
+        #score {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            color: #fff;
+            font-size: 2em;
+            font-family: "Arial", "Microsoft YaHei", "黑体", "宋体", sans-serif;
+            margin-left: -10px;
+        }
+
+        #welcome {
+            width: 80%;
+            padding: 10px;;
+        }
+
+        #welcome .title {
+            text-align: center;
+            font-size: 1.5em;
+        }
+
+        #welcome .content {
+            padding: 20px;
+            text-indent: 2em;
+            line-height: 1.5em;
+        }
+
+        .back, .start {
+            display: inline-block;
+            padding: 5px;
+            background-color: #0097d4;
+            border-radius: 5px;;
+        }
+
+        .start {
+            margin-left: 10px;
+            float: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .back {
+            margin-right: 20px;
+            float: right;
+        }
+
+        .start:before{
+            content: '';
+            width: 20px;
+            height: 100%;
+            position: absolute;
+            left: -20px;
+            top: 0;
+            background: linear-gradient(to left, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.8) 50%,rgba(255, 255, 255, 0));
+            -webkit-animation: shiny 2s ease-in-out 0.5s infinite;
+        }
+
+        @-webkit-keyframes shiny {
+            0% {
+                left: -20px;
+            }
+            25% {
+                left: 100%;
+            }
+            100% {
+                left: 100%;
+            }
+        }
+
+        /* 结果面板 */
+        .panel{
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            -webkit-transform: translate3D(-50%, -50%, 0);
+            background: #000;
+            opacity: 0.8;
+            color: #fff;
+            border-radius: 30px;
+        }
+        #resultPanel{
+            width: 80%;
+            height: 350px;
+            display: none;
+        }
+        #resultPanel .title{
+            text-align: center;
+            height: 50px;
+            line-height: 50px;
+            font-size: 25px;
+            background-color: #ff9000;
+            color: #fff;
+            border-top-left-radius: 30px;
+            border-top-right-radius: 30px;
+        }
+
+        .scoreList{
+            width: 100%;
+            height: 250px;
+        }
+
+        .scoreList .item{
+            height: 50px;
+            line-height: 50px;
+            font-size: 20px;
+            padding: 0 20px;
+            border-bottom: 1px #fff solid;
+            position: relative;
+        }
+
+        .scoreList .left{
+            position: absolute;
+            left: 60px;
+        }
+        .scoreList .left:before{
+            content: attr(ranking);
+            position: absolute;
+            left: -50px;
+        }
+        .scoreList .left[ranking="01"]:before{
+            content: "冠军";
+            color: #f00e5a;
+        }
+        .scoreList .left[ranking="02"]:before{
+            content: "亚军";
+            color: #0098dd;
+        }
+        .scoreList .left[ranking="03"]:before{
+            content: "季军";
+            color: #ff9000;
+        }
+        .scoreList .left[ranking="none"]:before{
+            content: "";
+        }
+
+        .scoreList .right{
+            position: absolute;
+            right: 10px;
+        }
+
+        #resultPanel .footer{
+            text-align: center;
+            height: 50px;
+        }
+
+        .isMe{
+            background-color: #fff;
+            color: #0098dd;
+        }
+        .verticalCenter{
+            position: relative;
+            top: 50%;
+            -webkit-transform: translate3d(0, -50%, 0);
+            overflow: hidden;
+        }
+
+        .music{
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            background-image: url("../../introduce/image/music.png");
+            background-position: -2px 0;
+            width: 30px;
+            height: 33px;
+        }
+        .music.off{
+            background-position: -33px 0;
+        }
+        #bgm{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<audio id="bgm" src="music/bgm.mp3" loop="loop" preload="auto" autoplay="autoplay"></audio>
+
+<div id="mask"></div>
+<canvas id="stage">
+
+</canvas>
+<a id="score">0</a>
+
+<div class="music"></div>
+
+<div id="welcome" class="panel">
+    <div class="title">玩法说明</div>
+    <div class="content">滑动手指控制蛇移动，<strong>只能吃和蛇颜色相同的食物或白色食物</strong>，彩色食物吃了会有特别的效果哦！</div>
+    <div class="btnWrap">
+        <a class="start">任意方向滑动开始</a>
+        <a class="back">返回首页</a>
+    </div>
+</div>
+
+<div id="resultPanel" class="panel">
+    <div class="title">总分榜</div>
+    <div class="scoreList">
+        <div class="item">
+            <div class="left">加载中...</div>
+            <div class="right"></div>
+        </div>
+        <div class="item">
+            <div class="left">加载中...</div>
+            <div class="right"></div>
+        </div>
+        <div class="item">
+            <div class="left">加载中...</div>
+            <div class="right"></div>
+        </div>
+        <div class="item">
+            <div class="left">加载中...</div>
+            <div class="right"></div>
+        </div>
+        <div class="item">
+            <div class="left">加载中...</div>
+            <div class="right"></div>
+        </div>
+    </div>
+    <div class="footer">
+        <div class="verticalCenter">
+            <a class="start">任意方向滑动开始</a>
+            <a class="back">返回首页</a>
+        </div>
+    </div>
+</div>
+<script src="https://cdn1.lncld.net/static/js/av-core-mini-0.5.5.js"></script>
+<script src="../../js/zepto.min.js"></script>
+<script>
+    document.body.addEventListener('touchmove', function (event) {
+        event.preventDefault();
+    }, false);
+
+    var $window = $(window);
+    var $resultPanel = $("#resultPanel");
+    var $mask = $("#mask");
+    var colors = ["#f00e5a", "#b2e281", "#0097d4"];
+    var curBgc = "#f00e5a";
+
+    var canvas = document.getElementById("stage");
+    canvas.width = 200;
+    canvas.height = 200;
+    var cxt = canvas.getContext("2d");
+    var rows = 20;
+    var blockWidth = 10;
+    var foods = [];
+
+    var $score = $("#score");
+    var score = 0;
+
+    //距离上次吃到食物的滑动次数
+    var swipeCount = 0;
+
+    var snake = {
+        color: curBgc,
+        speed: 300,
+        direction: "",
+        head: null,
+        body: [],
+        move: function (type) {
+            this.body.unshift(new Block(this.head.x, this.head.y));
+            this.body.pop();
+            switch (type) {
+                case "left":
+                    this.head.x -= blockWidth;
+                    break;
+                case "right":
+                    this.head.x += blockWidth;
+                    break;
+                case "up":
+                    this.head.y -= blockWidth;
+                    break;
+                case "down":
+                    this.head.y += blockWidth;
+                    break;
+            }
+            //有没有撞墙
+            if (snake.head.x < 0 || snake.head.x >= canvas.width || snake.head.y < 0 || snake.head.y >= canvas.height) {
+                game.info = "撞死啦！";
+                game.over();
+                return;
+            }
+            //有没有吃到自己
+            for (var i = 0; i < snake.body.length; i++) {
+                var body = snake.body[i];
+                if (snake.head.x == body.x && snake.head.y == body.y) {
+                    game.info = "吃到你自己啦！";
+                    game.over();
+                    break;
+                }
+            }
+            //判断食物
+            for (var i = 0; i < foods.length; i++) {
+                var food = foods[i];
+                if (food.x == this.head.x && food.y == this.head.y) {
+                    //吃到食物
+                    if (food.color == snake.color || food.color == "#fff") {
+                        snake.body.push(new Block(food.x, food.y));
+                        foods.splice(i, 1);
+                        createFood();
+
+                        if(food.color == colors[0]){
+                            //加速
+                            snake.speed = 100;
+                            setTimeout(function(){
+                                snake.speed = 300;
+                            }, 3000);
+                        }else if(food.color == colors[1]){
+                            //减速
+                            snake.speed = 1000;
+                            setTimeout(function(){
+                                snake.speed = 300;
+                            }, 5000);
+                        }else if(food.color == colors[2]){
+                            createFood();
+                            createFood();
+                            createFood();
+                        }
+
+                        score += 5;
+                        //重置次数
+                        swipeCount = 0;
+                    } else {
+                        game.info = "吃错颜色毒死啦！";
+                        game.over();
+                        return;
+                    }
+                    break;
+                }
+            }
+
+            //得分
+            $score.html(score).css("margin-left", "-" + ($score.html().length * 10) + "px");
+        }
+    };
+
+    var game = (function () {
+        var moveThread;
+        AV.initialize("wpw0y2o6o7b2p0p10gm1vvugxfhngq7esb9zv72y8xo49npc", "95sucb4dj54p27w6io1qm5zkhfoj7ain7snz0chvmiip6w9v");
+        var Player = AV.Object.extend("snakePlayer");
+        var player = new Player();
+        return {
+            flag: false,
+            info: "",
+            start: function () {
+                this.flag = true;
+                foods = [];
+                snake.body = [];
+                snake.direction = "";
+                score = 0;
+                //产生蛇
+                var rX = rows / 2 * blockWidth;
+                var rY = rows / 2 * blockWidth;
+                snake.head = new Block(rX, rY);
+                snake.body.push(new Block(rX, rY), new Block(rX, rY));
+
+                //蛇的移动线程
+                moveThread = setTimeout(function () {
+                    if (game.flag) {
+                        snake.move(snake.direction);
+                        moveThread = setTimeout(arguments.callee, snake.speed);
+                    }
+                }, snake.speed);
+
+                //产生食物
+                createFood();
+                createFood();
+                createFood();
+
+                //绘画
+                draw();
+            },
+            over: function () {
+                clearTimeout(moveThread);
+                this.flag = false;
+                $resultPanel.find(".title").css("background-color", getRandomColor(curBgc));
+
+                var name = prompt("啊哦，" + game.info + "留下你的大名吧：");
+                if(!name || name.trim() == ""){
+                    this.showPlayer();
+                }else{
+                    this.savePlayer(name, score);
+                }
+            },
+            savePlayer: function(name, score){
+                var self = this;
+                //进行存储
+                player.save({
+                    name: name,
+                    score: score
+                }, {
+                    success: function (post) {
+                        self.showPlayer(name, score);
+                    },
+                    error: function (post, error) {
+                        // 失败了.
+                        alert("抱歉，由于网络原因上传失败！");
+                        $resultPanel.show();
+                    }
+                });
+            },
+            showPlayer: function(name, score){
+                // 实例已经成功保存.
+                $resultPanel.show();
+                var query = new AV.Query(Player);
+                query.descending("score");
+                //如果没有上传分数
+                if(!name){
+                    //只显示前五名
+                    query.find({
+                        success: function (results) {
+                            // 处理返回的结果数据
+                            for (var i = 0; i < 5; i++) {
+                                var object = results[i];
+                                var $item = $resultPanel.find(".item").eq(i);
+                                var oName = object.get('name').length > 4 ? object.get('name').slice(0, 4) + ".." : object.get('name');
+                                var oScore = object.get('score');
+                                $item.find(".left").html(oName).attr("ranking", i + 1 < 10 ? "0" + (i + 1) : i + 1);
+                                $item.find(".right").html(oScore);
+                            }
+                        },
+                        error: function (error) {
+                            alert("抱歉，由于网络原因获取失败！");
+                        }
+                    });
+                    return;
+                }
+                query.find({
+                    success: function (results) {
+                        // 处理返回的结果数据
+                        for (var i = 0; i < results.length; i++) {
+                            var object = results[i];
+                            if (object.get('name') == name && object.get('score') == score) {
+                                break;
+                            }
+                        }
+                        //前五：
+                        var $items = $resultPanel.find(".item");
+                        for (var k = 0; k < 5; k++) {
+                            $items.eq(k).find(".left").html("").attr("ranking", "none").parent().find(".right").html("");
+                        }
+                        if (i < 5) {
+                            for (var i = 0; i < results.length; i++) {
+                                var object = results[i];
+                                var $item = $resultPanel.find(".item").eq(i);
+                                var oName = object.get('name');
+                                var oScore = object.get('score');
+                                if (oName == name && oScore == score) {
+                                    $item.addClass("isMe");
+                                }
+                                $item.find(".left").html(oName.length > 4 ? oName.slice(0, 4) + ".." : oName).attr("ranking", i + 1 < 10 ? "0" + (i + 1) : i + 1);
+                                $item.find(".right").html(oScore);
+                            }
+                        } else {
+                            $items.eq(2).addClass("isMe");
+                            for (var j = i - 2, k = 0; j < i + 3; j++, k++) {
+                                var object = results[j];
+                                var oName = object.get('name').length > 4 ? object.get('name').slice(0, 4) + ".." : object.get('name');
+                                var oScore = object.get('score');
+                                $items.eq(k).find(".left").html(oName).attr("ranking", j + 1 < 10 ? "0" + (j + 1) : j + 1);
+                                $items.eq(k).find(".right").html(oScore);
+                            }
+                        }
+                    },
+                    error: function (error) {
+                        alert("抱歉，由于网络原因获取失败！");
+                    }
+                });
+            }
+        };
+    })();
+
+    var Block = function (x, y) {
+        this.x = x;
+        this.y = y;
+    };
+
+    var Food = function (x, y, color) {
+        Block.call(this, x, y);
+        this.color = color;
+    };
+    Food.prototype = new Block();
+    Food.prototype.constructor = Food;
+
+    //绘画
+    function draw() {
+        cxt.fillStyle = "#000";
+        cxt.fillRect(0, 0, 200, 200);
+        //画蛇
+        cxt.fillStyle = snake.color;
+        //头部
+        if (snake.head) {
+            cxt.fillRect(snake.head.x, snake.head.y, blockWidth, blockWidth);
+        }
+        //身体
+        for (var i = 0; i < snake.body.length; i++) {
+            var block = snake.body[i];
+            cxt.fillRect(block.x, block.y, blockWidth, blockWidth);
+        }
+
+        //画食物
+        for (var i = 0; i < foods.length; i++) {
+            var food = foods[i];
+            cxt.fillStyle = food.color;
+            cxt.fillRect(food.x, food.y, blockWidth, blockWidth);
+        }
+
+        if (game.flag) {
+            requestAnimationFrame(draw);
+        }
+    }
+
+    //简单的手机处理
+    $window.on("swipeLeft", function () {
+        swipe("left");
+    }).on("swipeRight", function () {
+        swipe("right");
+    }).on("swipeUp", function () {
+        swipe("up");
+    }).on("swipeDown", function () {
+        swipe("down");
+    }).keydown(function(e){
+        if(e.keyCode == "37"){
+            swipe("left");
+        }else if(e.keyCode == '39'){
+            swipe("right");
+        }else if(e.keyCode == "38"){
+            swipe("up");
+        }else if(e.keyCode == "40"){
+            swipe("down");
+        }
+    });
+
+    //滑动
+    function swipe(type){
+        if (!game.flag) {
+            game.start();
+            game.flag = true;
+            $("#welcome").hide();
+            $resultPanel.hide();
+            //播放
+            if(!$music.hasClass("off")){
+                $bgm.play();
+            }
+        }
+        if (type == snake.direction || (type == "left" && snake.direction == "right")
+                || (type == "right" && snake.direction == "left") || (type == "down" && snake.direction == "up")
+                || (type == "up" && snake.direction == "down")) {
+            return;
+        }
+        snake.direction = type;
+        changeBgc(type);
+
+        swipeCount++;
+        //超过七次没有吃到食物且没有白色食物
+        if (swipeCount >= 7) {
+            var hasWhite = false;
+            for (var i = 0; i < foods.length; i++) {
+                if (foods[i].color == "#fff") {
+                    hasWhite = true;
+                    break;
+                }
+            }
+            if (!hasWhite) {
+                createFood("#fff");
+            }
+        }
+    }
+
+    //创建随机颜色
+    function getRandomColor(except) {
+        var color;
+        while (except == (color = colors[Math.floor(Math.random() * colors.length)])) {
+
+        }
+        return color;
+    }
+
+    //创建食物，有参数代表指定颜色
+    function createFood(color) {
+        var rX;
+        var rY;
+        var flag = true;
+        while (flag) {
+            rX = Math.floor(Math.random() * rows) * blockWidth;
+            rY = Math.floor(Math.random() * rows) * blockWidth;
+            //判断蛇头
+            if (rX == snake.head.x && rY == snake.head.y) {
+                continue;
+            }
+            //判断蛇尾
+            var isSame = false;
+            for (var i = 0; i < snake.body.length; i++) {
+                var block = snake.body[i];
+                if (rX == block.x && rY == block.y) {
+                    isSame = true;
+                    break;
+                }
+            }
+            if (isSame) {
+                continue;
+            }
+            //判断食物
+            for (var i = 0; i < foods.length; i++) {
+                var food = foods[i];
+                if (rX == food.x && rY == food.y) {
+                    isSame = true;
+                    break;
+                }
+            }
+            if (isSame) {
+                continue;
+            }
+            flag = false;
+        }
+
+        //至少需要存在一个与背景色相同的食物
+        flag = false;
+        for (var i = 0; i < foods.length; i++) {
+            if (foods[i].color == curBgc) {
+                flag = true;
+                break;
+            }
+        }
+        if (color) {
+            food = new Food(rX, rY, color);
+        } else if (!flag) {
+            food = new Food(rX, rY, curBgc);
+        } else {
+            food = new Food(rX, rY, getRandomColor());
+        }
+        foods.push(food);
+    }
+
+    //改变背景色
+    function changeBgc(type) {
+        //改变背景色
+        curBgc = getRandomColor(curBgc);
+        $mask.css({
+            "background-color": curBgc,
+            "-webkit-animation": "bg-" + type + " 0.5s"
+        });
+        setTimeout(function () {
+            $("body").css("background-color", curBgc);
+            $mask.css({
+                "-webkit-animation": ""
+            });
+        }, 500);
+        //改变蛇的颜色
+        snake.color = curBgc;
+    }
+
+    $(".back").on("click", function(){
+       location.href = "../../index.html";
+    });
+
+    //音乐
+    var $music = $(".music");
+    var $bgm = $("#bgm")[0];
+    $music.on("click", function(){
+        if($music.hasClass("off")){
+            //播放
+            $bgm.play();
+            $music.removeClass("off");
+        }else{
+            //暂停
+            $bgm.pause();
+            $music.addClass("off");
+        }
+    });
+</script>
+</body>
+</html>

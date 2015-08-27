@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/>
+    <title>进击的兔子君</title>
+    <link href="css/main.css" rel="stylesheet"/>
+    <link href="../../css/prepare_style_1.css" rel="stylesheet" />
+</head>
+<body>
+<audio id="bgm" src="music/bgm.mp3" loop="loop" preload="auto" autoplay="autoplay"></audio>
+<div class="section" id="preSection">
+
+</div>
+<div>
+    <div class="music"></div>
+    <canvas id="stage"></canvas>
+    <div id="resultPanel" class="panel">
+        <div class="title">总分榜</div>
+        <div class="scoreList">
+            <div class="item">
+                <div class="left">加载中...</div>
+                <div class="right"></div>
+            </div>
+            <div class="item">
+                <div class="left">加载中...</div>
+                <div class="right"></div>
+            </div>
+            <div class="item">
+                <div class="left">加载中...</div>
+                <div class="right"></div>
+            </div>
+            <div class="item">
+                <div class="left">加载中...</div>
+                <div class="right"></div>
+            </div>
+            <div class="item">
+                <div class="left">加载中...</div>
+                <div class="right"></div>
+            </div>
+        </div>
+        <div class="footer">
+            <a class="replay">再来一局</a>
+            <a class="back">返回首页</a>
+        </div>
+    </div>
+    <div id="tipPanel" class="panel">
+        <a class="tipImg"></a>
+        <span>摇晃手机进行游戏</span>
+    </div>
+</div>
+<script type="text/javascript">
+    //平台、设备和操作系统
+    var system = {
+        win: false,
+        mac: false,
+        xll: false,
+        ipad: false
+    };
+    //检测平台
+    var p = navigator.platform;
+    system.win = p.indexOf("Win") == 0;
+    system.mac = p.indexOf("Mac") == 0;
+    system.x11 = (p == "X11") || (p.indexOf("Linux") == 0);
+    system.ipad = (navigator.userAgent.match(/iPad/i) != null) ? true : false;
+    //跳转语句，如果是手机访问就自动跳转到wap.baidu.com页面
+    if (system.win || system.mac || system.xll || system.ipad) {
+        alert("本游戏为移动端设计，为了更好的体验，请用手机访问")
+    }
+</script>
+<script src="https://cdn1.lncld.net/static/js/av-core-mini-0.5.5.js"></script>
+<script src="../../js/zepto.min.js"></script>
+<script src="../../js/prepare.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/>
+    <link href="css/main.css" rel="stylesheet"/>
+    <title></title>
+</head>
+<body>
+<div id="container">
+    <div id="chatPanel">
+    </div>
+    <div id="inputPanel">
+        <div class="inputWrap"><input type="text" id="messageInput"></div>
+        <div class="toolWrap">
+            <a id="sendBtn">发送</a>
+        </div>
+    </div>
+    <div id="setting">设置</div>
+    <div id="settingPanel">
+        <a class="title">设置</a>
+        <div class="content">
+            <label for="chatName">给我取个好听点的名字吧！</label>
+            <input id="chatName" type="text" />
+            <label for="username">我该怎么称呼你呢？</label>
+            <input id="username" type="text" />
+            <!--
+            <label>我的气泡颜色</label>
+            <div class="chooseWrap robotColor">
+                <a class="chooseColor green cur" data-color="#b2e281"></a>
+                <a class="chooseColor blue" data-color="#0098dd"></a>
+                <a class="chooseColor white" data-color="#fff"></a>
+            </div>
+            <label>你的气泡颜色</label>
+            <div class="chooseWrap userColor">
+                <a class="chooseColor green" data-color="#b2e281"></a>
+                <a class="chooseColor blue" data-color="#0098dd"></a>
+                <a class="chooseColor white cur" data-color="#fff"></a>
+            </div>
+            -->
+        </div>
+        <div class="footer">
+            <div class="btnWrap">
+                <a id="saveSetting">保存修改</a>
+                <a id="backHome">返回主页</a>
+            </div>
+        </div>
+        <div class="close"></div>
+    </div>
+</div>
+
+<script src="https://cdn1.lncld.net/static/js/av-core-mini-0.5.5.js"></script>
+<script src="../../js/zepto.min.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

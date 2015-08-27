@@ -1,0 +1,202 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    font-family: "Arial", "Microsoft YaHei", "黑体", "宋体", sans-serif;
+}
+
+canvas {
+    display: block;
+    cursor: none;
+}
+
+a {
+    text-decoration: none;
+    color: #fff;
+}
+
+.ta-c {
+    text-align: center;
+}
+
+#container, .section {
+    height: 100%;
+    position: relative;
+}
+
+/* 内部 */
+.content {
+    position: absolute;
+    left: 50%;
+    top: 15px;
+    -webkit-transform: translate3D(-50%, 0, 0);
+    color: #fff;
+    width: 70%;
+}
+
+@media screen and (min-width: 960px) {
+    .content {
+        width: auto
+    }
+}
+
+/*音乐*/
+.music {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    background-image: url("../images/music.png");
+    background-position: -2px 0;
+    width: 30px;
+    height: 33px;
+}
+
+.music.off {
+    background-position: -33px 0;
+}
+
+#bgm {
+    display: none;
+}
+.panel{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate3D(-50%, -50%, 0);
+    background: #000;
+    opacity: 0.8;
+    color: #fff;
+    border-radius: 30px;
+}
+#tipPanel{
+    width: 200px;
+    height: 220px;
+    display: none;
+}
+#tipPanel .tipImg{
+    display: block;
+    width: 128px;
+    height: 128px;
+    margin: 30px auto;
+    background: url("../images/tip.png") center no-repeat;
+    -webkit-animation: tip 3s ease-in-out 0s infinite;
+}
+#tipPanel.hide{
+    -webkit-animation: tip-hide 0.5s linear 0s forwards;
+}
+@-webkit-keyframes tip-hide {
+    0%{
+        opacity: 0.8;
+    }
+    100%{
+        opacity: 0;
+        display: none;
+    }
+}
+@-webkit-keyframes tip {
+    0%{
+        -webkit-transform: rotate(0deg);
+    }
+    25%{
+        -webkit-transform: rotate(30deg);
+    }
+    75%{
+        -webkit-transform: rotate(-30deg);
+    }
+    100%{
+        -webkit-transform: rotate(0deg);
+    }
+ }
+#tipPanel span{
+    display: block;
+    margin: 10px auto;
+    line-height: 20px;
+    text-align: center;
+}
+#resultPanel{
+    width: 80%;
+    height: 350px;
+    display: none;
+}
+#resultPanel .title{
+    text-align: center;
+    height: 50px;
+    line-height: 50px;
+    font-size: 25px;
+    background-color: #0098dd;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+}
+
+.scoreList{
+    width: 100%;
+    height: 250px;
+}
+
+.scoreList .item{
+    height: 50px;
+    line-height: 50px;
+    font-size: 20px;
+    padding: 0 20px;
+    border-bottom: 1px #fff solid;
+    position: relative;
+}
+
+.scoreList .left{
+    position: absolute;
+    left: 60px;
+}
+.scoreList .left:before{
+    content: attr(ranking);
+    position: absolute;
+    left: -50px;
+}
+.scoreList .left[ranking="01"]:before{
+    content: "冠军";
+    color: #f00e5a;
+}
+.scoreList .left[ranking="02"]:before{
+    content: "亚军";
+    color: #0098dd;
+}
+.scoreList .left[ranking="03"]:before{
+    content: "季军";
+    color: #ff9000;
+}
+.scoreList .left[ranking="none"]:before{
+    content: "";
+}
+
+.scoreList .right{
+    position: absolute;
+    right: 10px;
+}
+
+#resultPanel .footer{
+    text-align: center;
+    height: 50px;
+}
+
+.replay, .back{
+    display: block;
+    width: 100px;
+    height: 30px;
+    line-height: 30px;
+    background-color: #0098dd;
+    border-radius: 10px;
+    cursor: pointer;
+
+}
+.replay{
+    margin: 12px 10px;
+    float: left;
+}
+.back{
+    margin: 12px 10px;
+    float: right;
+}
+.isMe{
+    background-color: #fff;
+    color: #0098dd;
+}
