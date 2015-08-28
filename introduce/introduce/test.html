@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+    <title></title>
+    <style>
+        html, body{
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        #ball{
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            background-color: #f00;
+        }
+    </style>
+</head>
+<body>
+<div id="ball"></div>
+
+<script>
+    var ball = document.getElementById("ball");
+
+    if (window.DeviceMotionEvent) {
+        window.addEventListener('devicemotion',deviceMotionHandler, false);
+    }
+
+    var lastX = 0, lastY = 0, speed = 3;
+    var pos = {
+        left: 0,
+        bottom: 0
+    };
+    function deviceMotionHandler(eventData){
+        var acceleration = eventData.accelerationIncludingGravity;
+        var x, y, z;
+        x = acceleration.x;
+        y = acceleration.y;
+        var changeX = x - lastX;
+        var changeY = y - lastY;
+        changeX *= speed;
+        changeY *= speed;
+
+        pos.left += changeX;
+        pos.bottom += changeY;
+        ball.style["-webkit-transform"] = "translate3D(" + pos.left + "px, -" + pos.bottom + "px, 0)";
+    }
+</script>
+</body>
+</html>
